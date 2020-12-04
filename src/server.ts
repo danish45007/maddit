@@ -2,6 +2,9 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import express from "express";
 import morgon from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth";
 import trim from "./middlewares/trim";
 const app = express();
@@ -9,6 +12,7 @@ const app = express();
 // middlewares
 app.use(express.json());
 app.use(morgon("dev"));
+app.use(cookieParser());
 app.use(trim);
 // routes
 app.use("/api/auth", authRoutes);
@@ -18,7 +22,8 @@ app.get("/", (req, res) => {
   res.json("Hello");
 });
 
-app.listen(5000, async () => {
+const PORT = process.env.PORT || 5500;
+app.listen(PORT, async () => {
   console.log("Server running at http://localhost:5000/");
 
   try {
