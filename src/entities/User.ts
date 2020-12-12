@@ -1,26 +1,23 @@
-import { IsEmail, Length, Min } from "class-validator";
+import { IsEmail, Length } from "class-validator";
 import bcrypt from "bcrypt";
-import { classToPlain, Exclude } from "class-transformer";
+import { Exclude } from "class-transformer";
 import {
-  Entity,
-  PrimaryGeneratedColumn,
+  Entity as ToEntity,
   Column,
-  BaseEntity,
   Index,
-  CreateDateColumn,
   BeforeInsert,
+  OneToMany,
 } from "typeorm";
 
-@Entity("users")
-export class User extends BaseEntity {
+import Entity from "./Entity";
+import Post from "./Post";
+@ToEntity("users")
+export default class User extends Entity {
   // user
   constructor(user: Partial<User>) {
     super();
     Object.assign(this, user);
   }
-  @Exclude()
-  @PrimaryGeneratedColumn()
-  id: number;
 
   @Index()
   @Length(3, 255, { message: "Username must be atleast 3 characters long" })
@@ -40,18 +37,12 @@ export class User extends BaseEntity {
   @Length(5, 255)
   password: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @CreateDateColumn()
-  updatedAt: Date;
+  // relation user to post
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, process.env.SALT);
-  }
-
-  toJSON() {
-    return classToPlain(this);
   }
 }

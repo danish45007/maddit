@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth";
+import postRoutes from "./routes/post";
 import trim from "./middlewares/trim";
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use(trim);
 // routes
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", postRoutes);
 
 // test route
 app.get("/", (req, res) => {
@@ -24,7 +26,7 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5500;
 app.listen(PORT, async () => {
-  console.log("Server running at http://localhost:5000/");
+  console.log(`Server running at http://localhost:${PORT}/`);
 
   try {
     await createConnection();
