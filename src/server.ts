@@ -7,6 +7,7 @@ dotenv.config();
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth";
 import postRoutes from "./routes/post";
+import subsRoutes from "./routes/subs";
 import trim from "./middlewares/trim";
 const app = express();
 
@@ -17,11 +18,12 @@ app.use(cookieParser());
 app.use(trim);
 // routes
 app.use("/api/auth", authRoutes);
-app.use("/api/auth", postRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/subs", subsRoutes);
 
 // test route
 app.get("/", (req, res) => {
-  res.json("Hello");
+  res.send("Welcone to maddit.com");
 });
 
 const PORT = process.env.PORT || 5500;
