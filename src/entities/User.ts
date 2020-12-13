@@ -43,6 +43,6 @@ export default class User extends Entity {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, process.env.SALT);
+    this.password = await bcrypt.hash(this.password, 6);
   }
 }
