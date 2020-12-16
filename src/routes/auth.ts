@@ -71,7 +71,7 @@ const login = async (req: Request, res: Response) => {
       {
         username,
       },
-      process.env.JWT_SECRECT
+      process.env.JWT_SECRECT!
     );
     // setting token inside a cookie
     res.set(

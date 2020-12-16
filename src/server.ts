@@ -22,7 +22,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/subs", subsRoutes);
 
 // test route
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Welcone to maddit.com");
 });
 
