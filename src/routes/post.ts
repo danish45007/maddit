@@ -1,8 +1,10 @@
 import { Request, Response, Router } from "express";
+import Comment from "../entities/Comment";
 import Post from "../entities/Post";
 import Sub from "../entities/Subs";
 import auth from "../middlewares/auth";
 
+// create post for the present sub
 const createPost = async (req: Request, res: Response) => {
   const { title, body, sub } = req.body;
   const user = res.locals.user;
@@ -29,7 +31,72 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
+// fetch all the posts with the associated subs
+
+const getPosts = async (_: Request, res: Response) => {
+  try {
+    const posts = await Post.find({
+      order: {
+        createdAt: "DESC",
+      },
+    });
+
+    return res.status(200).json({
+      posts,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+// get single post
+const getPost = async (req: Request, res: Response) => {
+  const { identifier, slug } = req.params;
+  try {
+    const post = await Post.findOneOrFail(
+      { identifier, slug },
+      {
+        relations: ["sub"],
+      }
+    );
+
+    return res.status(200).json({
+      post,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ error: "Post not found" });
+  }
+};
+
+// comment on post
+const commentOnPost = async (req: Request, res: Response) => {
+  const { identifier, slug } = req.params;
+  const { body } = req.body;
+  const user = res.locals.user;
+
+  try {
+    const post = await Post.findOneOrFail({ identifier, slug });
+    const comment = new Comment({
+      body,
+      user,
+      post,
+    });
+    await comment.save();
+    return res.status(201).json(comment);
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({
+      error: "Post not found",
+    });
+  }
+};
+
 const router = Router();
 router.post("/", auth, createPost);
+router.get("/", getPosts);
+router.get("/:identifier/:slug", getPost);
+router.post("/:identifier/:slug/comment", auth, commentOnPost);
 
 export default router;
