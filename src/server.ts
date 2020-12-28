@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import cors from "cors";
 import { createConnection } from "typeorm";
 import express from "express";
 import morgon from "morgan";
@@ -12,6 +13,7 @@ import trim from "./middlewares/trim";
 const app = express();
 
 // middlewares
+app.use(cors());
 app.use(express.json());
 app.use(morgon("dev"));
 app.use(cookieParser());

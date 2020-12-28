@@ -24,7 +24,17 @@ const register = async (req: Request, res: Response) => {
     }
     const user = new User({ username, email, password });
     errors = await validate(user);
-    if (errors.length > 0) return res.status(400).json({ errors });
+    if (errors.length > 0) {
+      // mapping errors
+      let mapErrors: any = {};
+      errors.forEach((e: any) => {
+        const key = e.property;
+        const value = Object.entries(e.constraints)[0][1];
+        mapErrors[key] = value;
+      });
+      console.log(mapErrors);
+      return res.status(400).json(mapErrors);
+    }
     await user.save();
     return res.status(201).json(user);
   } catch (err) {
