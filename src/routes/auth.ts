@@ -57,23 +57,21 @@ const login = async (req: Request, res: Response) => {
 
     // send errors res
     if (Object.keys(errors).length > 0) {
-      return res.status(400).send({
-        error: errors,
-      });
+      return res.status(400).json(errors);
     }
 
     const user = await User.findOne({
       username,
     });
     if (!user) {
-      return res.status(404).send({
-        error: "No user found",
+      return res.status(404).json({
+        username: "No user found",
       });
     }
     const passMatch = await bcrypt.compare(password, user.password);
     if (!passMatch) {
-      return res.status(401).send({
-        password: "Password didn't match",
+      return res.status(401).json({
+        password: "Password is incorrect",
       });
     }
     // if pass correct create jsonToken and store inside cookie and send to user
@@ -100,8 +98,8 @@ const login = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
-    return res.status(404).send({
-      error: err,
+    return res.status(404).json({
+      error: "Something went wrong",
     });
   }
 };

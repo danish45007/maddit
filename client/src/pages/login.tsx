@@ -7,10 +7,8 @@ import { useRouter } from "next/router";
 
 import InputGroup from "../components/inputGroup";
 export default function Register() {
-  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [agreement, setAgreement] = useState(false);
   const [errors, setErrors] = useState<any>({});
 
   const router = useRouter();
@@ -18,19 +16,12 @@ export default function Register() {
   const submitForm = async (event: FormEvent) => {
     event.preventDefault();
 
-    // check if the agreement is checked
-    if (!agreement) {
-      setErrors({ ...errors, agreement: "You must agree to T&Cs" });
-      return;
-    }
-
     try {
-      await axios.post("/auth/register", {
-        email,
+      await axios.post("/auth/login", {
         password,
         username,
       });
-      router.push("/login");
+      router.push("/");
       //console.log(res.data);
     } catch (err) {
       console.log(err);
@@ -41,7 +32,7 @@ export default function Register() {
   return (
     <div className="flex">
       <Head>
-        <title>Maddit:Register</title>
+        <title>Maddit:Login</title>
       </Head>
 
       <div
@@ -50,7 +41,7 @@ export default function Register() {
       ></div>
       <div className="flex flex-col justify-center pl-6">
         <div className="w-72">
-          <h1 className="mb-2 text-lg font-medium">Sign up</h1>
+          <h1 className="mb-2 text-lg font-medium">Login</h1>
           <p className="mb-10 text-xs">
             By continuing, you agree to our{" "}
             <a
@@ -68,31 +59,6 @@ export default function Register() {
             </a>
           </p>
           <form onSubmit={submitForm}>
-            <div className="mb-6">
-              <input
-                type="checkbox"
-                className="mr-1 cursor-pointer"
-                id="agreement"
-                checked={agreement}
-                onChange={(e) => setAgreement(e.target.checked)}
-              />
-              <label htmlFor="agreement" className="text-xs cursor-pointer">
-                I agree to get emails about cool stuff on Maddit
-              </label>
-              <small className="block font-medium text-red-600">
-                {errors.agreement}
-              </small>
-            </div>
-
-            {/* Email */}
-            <InputGroup
-              className="mb-2"
-              type="email"
-              placeholder="Email"
-              value={email}
-              error={errors.email}
-              setValue={setEmail}
-            />
             {/* Username */}
             <InputGroup
               className="mb-2"
@@ -113,14 +79,14 @@ export default function Register() {
             />
 
             <button className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded hover:bg-blue-400">
-              Sign Up
+              Log in
             </button>
           </form>
           <small>
-            Already a madditor?
-            <Link href="/login">
+            New to madditor?
+            <Link href="/register">
               <a className="ml-1 font-extrabold text-blue-600 uppercase ">
-                Log in
+                SIGN UP
               </a>
             </Link>
           </small>
