@@ -5,7 +5,7 @@ import { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-import InputGroup from "../components/inputGroup";
+import InputGroup from "../components/InputGroup";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");

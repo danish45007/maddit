@@ -6,6 +6,7 @@ module.exports = {
       body: ["IBM Plex Sans"],
     },
     extend: {
+      opacity: ["active"],
       colors: {
         blue: {
           100: "#cce4f6",

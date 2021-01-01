@@ -5,6 +5,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import auth from "../middlewares/auth";
+import { jwtToken, hashPassword } from "../util/authToken";
+import sendMail from "../util/sendMail";
+import validateEmail from "../util/emailValidation";
+import { getConnection } from "typeorm";
 
 const register = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
@@ -109,6 +113,65 @@ const authMe = (_: Request, res: Response) => {
   return res.json(res.locals.user);
 };
 
+// send password reset link
+const sendResetLink = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!email) {
+      return res.status(400).send({ error: "Email is required" });
+    }
+    if (!validateEmail(email)) {
+      return res.status(400).send({ error: "Invalid email" });
+    }
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+    const token = jwtToken.createToken(user);
+    console.log(token);
+    const link = `${req.protocol}://localhost:3000/reset_password/${token}`;
+    await sendMail(
+      "noreply@maddit.com",
+      email,
+      "Reset your password",
+      `
+       <h3>Click the link below to reset your password</h3><br/>
+        <div>${link}</div>
+      `
+    );
+    return res.status(200).send({
+      message: "Password reset link has been successfully sent to your inbox",
+    });
+  } catch (err) {
+    console.log(err.response.data);
+    return res.status(500).json({
+      error: "Something went wrong",
+    });
+  }
+};
+
+// interface data {
+//   username: string;
+//   email: string;
+// }
+const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { password } = req.body;
+    const { token } = req.params;
+    console.log(token);
+    const decoded = jwtToken.verifyToken(token);
+    const hash = hashPassword(password);
+    await getConnection()
+      .createQueryBuilder()
+      .update(User)
+      .set({ password: hash })
+      .where("username = :username", { username: decoded.username })
+      .execute();
+    return res.status(200).send({ token });
+  } catch (e) {
+    console.log(e);
+  }
+};
 // logout
 const logout = async (_: Request, res: Response) => {
   res.set(
@@ -131,5 +194,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/authMe", auth, authMe);
 router.get("/logout", auth, logout);
+router.post("/forgot-password", sendResetLink);
+router.post("/reset-password/:token", resetPassword);
 
 export default router;
