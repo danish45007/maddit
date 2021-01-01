@@ -36,7 +36,7 @@ const register = async (req: Request, res: Response) => {
         const value = Object.entries(e.constraints)[0][1];
         mapErrors[key] = value;
       });
-      console.log(mapErrors);
+      // console.log(mapErrors);
       return res.status(400).json(mapErrors);
     }
     await user.save();
@@ -119,17 +119,17 @@ const sendResetLink = async (req: Request, res: Response) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!email) {
-      return res.status(400).send({ error: "Email is required" });
+      return res.status(400).send({ email: "Email is required" });
     }
     if (!validateEmail(email)) {
-      return res.status(400).send({ error: "Invalid email" });
+      return res.status(400).send({ email: "Invalid email" });
     }
     if (!user) {
-      return res.status(404).send({ error: "User not found" });
+      return res.status(404).send({ email: "User not found" });
     }
     const token = jwtToken.createToken(user);
-    console.log(token);
-    const link = `${req.protocol}://localhost:3000/reset_password/${token}`;
+    // console.log(token);
+    const link = `${req.protocol}://localhost:3000/reset-password/${token}`;
     await sendMail(
       "noreply@maddit.com",
       email,
@@ -143,22 +143,21 @@ const sendResetLink = async (req: Request, res: Response) => {
       message: "Password reset link has been successfully sent to your inbox",
     });
   } catch (err) {
-    console.log(err.response.data);
+    // console.log(err.response.data);/
     return res.status(500).json({
       error: "Something went wrong",
     });
   }
 };
 
-// interface data {
-//   username: string;
-//   email: string;
-// }
+// reset password
 const resetPassword = async (req: Request, res: Response) => {
   try {
-    const { password } = req.body;
-    const { token } = req.params;
-    console.log(token);
+    const { password, token } = req.body;
+    // console.log(token);
+    if (!password) {
+      return res.status(400).send({ password: "Password is required" });
+    }
     const decoded = jwtToken.verifyToken(token);
     const hash = hashPassword(password);
     await getConnection()
@@ -167,9 +166,11 @@ const resetPassword = async (req: Request, res: Response) => {
       .set({ password: hash })
       .where("username = :username", { username: decoded.username })
       .execute();
-    return res.status(200).send({ token });
+    return res.status(200).json({
+      message: "successfully updated your password",
+    });
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 };
 // logout
@@ -195,6 +196,6 @@ router.post("/login", login);
 router.get("/authMe", auth, authMe);
 router.get("/logout", auth, logout);
 router.post("/forgot-password", sendResetLink);
-router.post("/reset-password/:token", resetPassword);
+router.post("/reset-password", resetPassword);
 
 export default router;

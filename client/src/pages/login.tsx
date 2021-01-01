@@ -50,6 +50,10 @@ export default function Register() {
         ></div>
         <div className="flex flex-col justify-center pl-6">
           <div className="w-72">
+            <div
+              className="mb-4 bg-center bg-cover w-14 h-14"
+              style={{ backgroundImage: "url('/images/maddit.png')" }}
+            ></div>
             <h1 className="mb-2 text-lg font-medium">Login</h1>
             <p className="mb-10 text-xs">
               By continuing, you agree to our{" "}
@@ -104,9 +108,16 @@ export default function Register() {
               </button>
             </form>
             <small>
+              Forgot your
+              <Link href="/resend-email">
+                <a className="ml-1 text-blue-600 uppercase ">Password</a>
+              </Link>
+            </small>
+            <br />
+            <small>
               New to madditor?
               <Link href="/register">
-                <a className="ml-1 font-extrabold text-blue-600 uppercase ">
+                <a className="mt-4 ml-1 font-extrabold text-blue-600 uppercase ">
                   SIGN UP
                 </a>
               </Link>

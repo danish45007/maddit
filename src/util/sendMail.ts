@@ -5,7 +5,7 @@ const sendMail = (
   receiver: string,
   source: string,
   subject: string,
-  content: any
+  html: any
 ) => {
   try {
     const mg = mailgun({
@@ -16,7 +16,7 @@ const sendMail = (
       from: receiver,
       to: source,
       subject: subject,
-      text: content,
+      html: html,
     };
     return mg.messages().send(data, function (error: any, body: any) {
       if (error) {

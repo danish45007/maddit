@@ -5,14 +5,12 @@ import { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-import InputGroup from "../components/InputGroup";
+import InputGroup from "../../components/InputGroup";
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [response, setResponse] = useState("");
   const [password, setPassword] = useState("");
   const [agreement, setAgreement] = useState(false);
   const [errors, setErrors] = useState<any>({});
-
   const router = useRouter();
 
   const submitForm = async (event: FormEvent) => {
@@ -25,15 +23,18 @@ export default function Register() {
     }
 
     try {
-      await axios.post("/auth/register", {
-        email,
+      const { token } = router.query;
+      const res = await axios.post("auth/reset-password", {
         password,
-        username,
+        token,
       });
+      //   console.log(res.data.message);
+      await setResponse(res.data.message);
+      alert(response);
+      setPassword("");
       router.push("/login");
-      //console.log(res.data);
     } catch (err) {
-      console.log(err);
+      //   console.log(err);
       setErrors(err.response.data);
     }
   };
@@ -41,7 +42,7 @@ export default function Register() {
   return (
     <div className="flex">
       <Head>
-        <title>Maddit:Register</title>
+        <title>Maddit:Reset Password</title>
       </Head>
 
       <div
@@ -54,24 +55,20 @@ export default function Register() {
             className="mb-4 bg-center bg-cover w-14 h-14"
             style={{ backgroundImage: "url('/images/maddit.png')" }}
           ></div>
-          <h1 className="mb-2 text-lg font-medium">Sign up</h1>
-          <p className="mb-10 text-xs">
-            By continuing, you agree to our{" "}
-            <a
-              className="no-underline hover:underline ... text-blue-600"
-              href="https://www.redditinc.com/policies/user-agreement"
-            >
-              User Agreement
-            </a>{" "}
-            and{" "}
-            <a
-              className="no-underline hover:underline ... text-blue-600"
-              href="https://www.redditinc.com/policies/privacy-policy"
-            >
-              Privacy Policy.
-            </a>
+          <h1 className="mb-2 text-lg font-medium">Reset your password</h1>
+          <p className="mb-10 text-base">
+            Choose a new password here, then log in to your account.
           </p>
           <form onSubmit={submitForm}>
+            {/* Password */}
+            <InputGroup
+              className="mb-2"
+              type="password"
+              placeholder="Password"
+              value={password}
+              error={errors.password}
+              setValue={setPassword}
+            />
             <div className="mb-6">
               <input
                 type="checkbox"
@@ -81,50 +78,25 @@ export default function Register() {
                 onChange={(e) => setAgreement(e.target.checked)}
               />
               <label htmlFor="agreement" className="text-xs cursor-pointer">
-                I agree to get emails about cool stuff on Maddit
+                Changing your password logs you out of all browsers on your
+                device(s). Checking this box also logs you out of all apps you
+                have authorized.
               </label>
               <small className="block font-medium text-red-600">
                 {errors.agreement}
               </small>
             </div>
-
-            {/* Email */}
-            <InputGroup
-              className="mb-2"
-              type="email"
-              placeholder="Email"
-              value={email}
-              error={errors.email}
-              setValue={setEmail}
-            />
-            {/* Username */}
-            <InputGroup
-              className="mb-2"
-              type="text"
-              placeholder="Username"
-              value={username}
-              error={errors.username}
-              setValue={setUsername}
-            />
-            {/* password */}
-            <InputGroup
-              className="mb-2"
-              type="password"
-              placeholder="Password"
-              value={password}
-              error={errors.password}
-              setValue={setPassword}
-            />
-
             <button className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded hover:bg-blue-400">
-              Sign Up
+              Set password
             </button>
           </form>
-          <small>
-            Already a madditor?
+          <small className="mt-7">
             <Link href="/login">
-              <a className="ml-1 font-extrabold text-blue-600 uppercase ">
-                Log in
+              <a className="font-extrabold text-blue-600 uppercase">log in</a>
+            </Link>
+            <Link href="/register">
+              <a className="ml-3 font-extrabold text-blue-600 uppercase">
+                sign up
               </a>
             </Link>
           </small>
