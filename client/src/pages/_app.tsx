@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Fragment>
       <Provider session={pageProps.session}>
-        {!authRoute && <NavBar />}
+        {!authRoutes && <NavBar />}
         <Component {...pageProps} />
       </Provider>
     </Fragment>
