@@ -14,6 +14,7 @@ import Entity from "./Entity";
 import User from "./User";
 import Sub from "./Subs";
 import Comment from "./Comment";
+import Vote from "./Vote";
 @ToEntity("posts")
 export default class Post extends Entity {
   // post
@@ -51,6 +52,9 @@ export default class Post extends Entity {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
+
+  @OneToMany(() => Vote, (vote) => vote.post)
+  votes: [];
 
   protected url = "string";
   @AfterLoad()

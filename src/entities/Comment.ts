@@ -5,11 +5,13 @@ import {
   ManyToOne,
   JoinColumn,
   BeforeInsert,
+  OneToMany,
 } from "typeorm";
 import Entity from "./Entity";
 import User from "./User";
 import Post from "./Post";
 import { makeId } from "../util/helpers";
+import Vote from "./Vote";
 @ToEntity("comments")
 export default class Comment extends Entity {
   // post
@@ -35,6 +37,9 @@ export default class Comment extends Entity {
 
   @ManyToOne(() => Post, (post) => post.comments, { nullable: false })
   post: Post;
+
+  @OneToMany(() => Vote, (vote) => vote.comment)
+  votes: [];
 
   @BeforeInsert()
   makeIdAndSlug() {

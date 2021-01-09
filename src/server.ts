@@ -9,6 +9,8 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth";
 import postRoutes from "./routes/post";
 import subsRoutes from "./routes/subs";
+import miscRoutes from "./routes/misc";
+
 import trim from "./middlewares/trim";
 const app = express();
 
@@ -28,6 +30,7 @@ app.use(trim);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/subs", subsRoutes);
+app.use("/api/misc", miscRoutes);
 
 // test route
 app.get("/", (_, res) => {
