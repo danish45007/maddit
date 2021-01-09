@@ -11,6 +11,7 @@ import {
 
 import Entity from "./Entity";
 import Post from "./Post";
+import Vote from "./Vote";
 @ToEntity("users")
 export default class User extends Entity {
   // user
@@ -42,6 +43,10 @@ export default class User extends Entity {
   // relation user to post
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  // relation user to vote
+  @OneToMany(() => Vote, (vote) => vote.user)
+  votes: Vote[];
 
   @BeforeInsert()
   async hashPassword() {

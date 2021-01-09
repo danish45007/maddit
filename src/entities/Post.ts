@@ -15,6 +15,7 @@ import User from "./User";
 import Sub from "./Subs";
 import Comment from "./Comment";
 import Vote from "./Vote";
+import { Exclude, Expose } from "class-transformer";
 @ToEntity("posts")
 export default class Post extends Entity {
   // post
@@ -53,6 +54,7 @@ export default class Post extends Entity {
   @OneToMany(() => Comment, (comment) => comment.post)
   comments: Comment[];
 
+  @Exclude()
   @OneToMany(() => Vote, (vote) => vote.post)
   votes: [];
 
@@ -62,6 +64,22 @@ export default class Post extends Entity {
     this.url = `/r/${this.subName}/${this.identifier}/${this.slug}`;
   }
 
+  // to know if user vote the post
+  protected userVote: number;
+  setUserVote(user: User) {
+    const index: number = this.votes?.findIndex(
+      (v: any) => v.username === user.username
+    );
+    let res: number = index > -1 ? this.votes[index]["value"] : 0;
+    this.userVote = res;
+  }
+
+  @Expose() get commentCount(): number {
+    return this.comments?.length;
+  }
+  @Expose() get voteCount(): number {
+    return this.votes?.reduce((prev, curr: any) => prev + (curr.value || 0), 0);
+  }
   @BeforeInsert()
   makeIdAndSlug() {
     this.identifier = makeId(7);

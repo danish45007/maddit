@@ -12,6 +12,7 @@ import User from "./User";
 import Post from "./Post";
 import { makeId } from "../util/helpers";
 import Vote from "./Vote";
+import { Exclude } from "class-transformer";
 @ToEntity("comments")
 export default class Comment extends Entity {
   // post
@@ -38,8 +39,19 @@ export default class Comment extends Entity {
   @ManyToOne(() => Post, (post) => post.comments, { nullable: false })
   post: Post;
 
+  @Exclude()
   @OneToMany(() => Vote, (vote) => vote.comment)
   votes: [];
+
+  // to know if user vote the comment
+  protected userVote: number;
+  setUserVote(user: User) {
+    const index: number = this.votes?.findIndex(
+      (v: any) => v.username === user.username
+    );
+    let res: number = index > -1 ? this.votes[index]["value"] : 0;
+    this.userVote = res;
+  }
 
   @BeforeInsert()
   makeIdAndSlug() {

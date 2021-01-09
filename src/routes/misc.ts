@@ -21,6 +21,7 @@ const vote = async (req: Request, res: Response) => {
       identifier,
       slug,
     });
+    // console.log("Post-------------------", post);
     let vote: Vote | undefined;
     let comment: Comment | undefined;
 
@@ -29,13 +30,13 @@ const vote = async (req: Request, res: Response) => {
       comment = await Comment.findOneOrFail({
         identifier: commentIdentifier,
       });
-      vote = await Vote.findOneOrFail({
+      vote = await Vote.findOne({
         user,
         comment,
       });
     } else {
       // Else find vote by post
-      vote = await Vote.findOneOrFail({
+      vote = await Vote.findOne({
         user,
         post,
       });
@@ -72,13 +73,14 @@ const vote = async (req: Request, res: Response) => {
         slug,
       },
       {
-        relations: ["comments", "subs", "votes"],
+        relations: ["comments", "comments.votes", "votes", "sub"],
       }
     );
 
-    return res.status(200).json({
-      post,
-    });
+    post.setUserVote(user);
+    post.comments.forEach((c) => c.setUserVote(user));
+
+    return res.status(200).json(post);
   } catch (err) {
     console.log(err);
     return res.status(500).json({
