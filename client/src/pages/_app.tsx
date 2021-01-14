@@ -1,10 +1,11 @@
 import axios from "axios";
 import type { AppProps } from "next/app";
-import "../styles/tailwind.css";
 import { Provider } from "next-auth/client";
 import NavBar from "../components/NavBar";
 import { Fragment } from "react";
 import { useRouter } from "next/router";
+import "../styles/tailwind.css";
+import "../styles/icons.css";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 axios.defaults.withCredentials = true;
