@@ -4,6 +4,7 @@ import Axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Post } from "../types";
+import classNames from "classnames";
 dayjs.extend(relativeTime);
 
 interface PostCardProps {
@@ -44,7 +45,11 @@ const PostCard: React.FC<PostCardProps> = ({
           onClick={() => vote(1)}
           className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-600"
         >
-          <i className="icon-arrow-up"></i>
+          <i
+            className={classNames("icon-arrow-up", {
+              "text-red-600": userVote === 1,
+            })}
+          ></i>
         </div>
         {/* votes count */}
         <p className="font-bold">{voteCount}</p>
@@ -53,7 +58,11 @@ const PostCard: React.FC<PostCardProps> = ({
           onClick={() => vote(-1)}
           className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600"
         >
-          <i className="icon-arrow-down"></i>
+          <i
+            className={classNames("icon-arrow-down", {
+              "text-blue-600": userVote === -1,
+            })}
+          ></i>
         </div>
       </div>
       {/* Post data section */}

@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import auth from "../middlewares/auth";
+import user from "../middlewares/user";
 import { jwtToken, hashPassword } from "../util/authToken";
 import sendMail from "../util/sendMail";
 import validateEmail from "../util/emailValidation";
@@ -193,8 +194,8 @@ const logout = async (_: Request, res: Response) => {
 const router = Router();
 router.post("/register", register);
 router.post("/login", login);
-router.get("/authMe", auth, authMe);
-router.get("/logout", auth, logout);
+router.get("/authMe", user, auth, authMe);
+router.get("/logout", user, auth, logout);
 router.post("/forgot-password", sendResetLink);
 router.post("/reset-password", resetPassword);
 
