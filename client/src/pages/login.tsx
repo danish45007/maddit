@@ -1,4 +1,3 @@
-import axios from "axios";
 import Head from "next/head";
 import Link from "next/Link";
 import { FormEvent } from "react";
@@ -7,14 +6,21 @@ import { useRouter } from "next/router";
 import React from "react";
 import { signIn, signOut, useSession } from "next-auth/client";
 import InputGroup from "../components/InputGroup";
+import { useAuthDispatch, useAuthState } from "../context/auth";
+import axios from "axios";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});
   const [session, loading] = useSession();
+  const dispatch = useAuthDispatch();
+  const { authenticated } = useAuthState();
 
   const router = useRouter();
+  if (authenticated) {
+    router.push("/");
+  }
 
   const handleSignin = (event: FormEvent) => {
     event.preventDefault();
@@ -25,10 +31,13 @@ export default function Register() {
     event.preventDefault();
 
     try {
-      await axios.post("/auth/login", {
+      const res = await axios.post("/auth/login", {
         password,
         username,
       });
+
+      dispatch({ type: "LOGIN", payload: res.data });
+
       router.push("/");
       //console.log(res.data);
     } catch (err) {
