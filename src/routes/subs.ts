@@ -1,6 +1,7 @@
 import { isEmpty } from "class-validator";
 import { Request, Response, Router } from "express";
 import { getRepository } from "typeorm";
+import Post from "../entities/Post";
 import Sub from "../entities/Subs";
 import User from "../entities/User";
 import auth from "../middlewares/auth";
@@ -45,7 +46,31 @@ const createSubs = async (req: Request, res: Response) => {
   }
 };
 
+// get the single sub using sub-name param
+const getSub = async (req: Request, res: Response) => {
+  const name = req.params.name;
+  try {
+    const sub = await Sub.findOneOrFail({
+      name,
+    });
+    const posts = await Post.find({
+      where: { subName: sub },
+      order: { createdAt: "DESC" },
+      relations: ["comments", "votes"],
+    });
+    sub.posts = posts;
+    if (res.locals.user) {
+      sub.posts.forEach((post) => post.setUserVote(res.locals.user));
+    }
+    return res.status(200).json(sub);
+  } catch (err) {
+    console.log(err);
+    return res.status(404).json({ sub: "Sub not found" });
+  }
+};
+
 const router = Router();
 router.post("/", user, auth, createSubs);
+router.get("/:name", user, getSub);
 
 export default router;

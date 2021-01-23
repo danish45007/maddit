@@ -4,19 +4,13 @@ import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import { Post } from "../types";
 import useSWR from "swr";
+import { Fragment } from "react";
 
 export default function Home() {
   const { data: posts } = useSWR("/posts");
-  // const [posts, setPosts] = useState<Post[]>([]);
-
-  // useEffect(() => {
-  //   Axios.get("/posts")
-  //     .then((res) => setPosts(res.data.posts))
-  //     .catch((err) => console.log(err));
-  // }, []);
 
   return (
-    <div className="pt-12">
+    <Fragment>
       <Head>
         <title>Maddit: the front page of the internet</title>
       </Head>
@@ -29,6 +23,6 @@ export default function Home() {
         </div>
         {/* Sidebar */}
       </div>
-    </div>
+    </Fragment>
   );
 }

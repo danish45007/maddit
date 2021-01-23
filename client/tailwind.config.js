@@ -1,3 +1,4 @@
+const colors = require("tailwindcss/colors");
 module.exports = {
   purge: ["./src/**/*.tsx"],
   darkMode: false, // or 'media' or 'class'
@@ -19,6 +20,8 @@ module.exports = {
           800: "#003054",
           900: "#00182a",
         },
+        "light-blue": colors.lightBlue,
+        cyan: colors.cyan,
       },
       spacing: {
         70: "17.5rem",

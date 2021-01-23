@@ -10,6 +10,16 @@ import { SWRConfig } from "swr";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 axios.defaults.withCredentials = true;
+
+const fetcher = async (url: string) => {
+  try {
+    const res = await axios.get(url);
+    return res.data;
+  } catch (err) {
+    throw err.response.data;
+  }
+};
+
 function MyApp({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter();
   const authRoute = [
@@ -23,13 +33,16 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SWRConfig
       value={{
-        fetcher: (url) => axios.get(url).then((res) => res.data),
+        fetcher,
+        dedupingInterval: 10000,
       }}
     >
       <AuthProvider>
         <Provider session={pageProps.session}>
           {!authRoutes && <NavBar />}
-          <Component {...pageProps} />
+          <div className={authRoutes ? "" : "pt-12"}>
+            <Component {...pageProps} />
+          </div>
         </Provider>
       </AuthProvider>
     </SWRConfig>
