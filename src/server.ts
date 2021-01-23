@@ -22,10 +22,13 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
+// access the static folder(public)
+app.use(express.static("public"));
 app.use(express.json());
 app.use(morgon("dev"));
 app.use(cookieParser());
 app.use(trim);
+
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
