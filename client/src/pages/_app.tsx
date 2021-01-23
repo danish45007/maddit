@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import "../styles/tailwind.css";
 import "../styles/icons.css";
 import { AuthProvider } from "../context/auth";
+import { SWRConfig } from "swr";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 axios.defaults.withCredentials = true;
@@ -20,12 +21,18 @@ function MyApp({ Component, pageProps }: AppProps) {
   const authRoutes = authRoute.includes(pathname);
 
   return (
-    <AuthProvider>
-      <Provider session={pageProps.session}>
-        {!authRoutes && <NavBar />}
-        <Component {...pageProps} />
-      </Provider>
-    </AuthProvider>
+    <SWRConfig
+      value={{
+        fetcher: (url) => axios.get(url).then((res) => res.data),
+      }}
+    >
+      <AuthProvider>
+        <Provider session={pageProps.session}>
+          {!authRoutes && <NavBar />}
+          <Component {...pageProps} />
+        </Provider>
+      </AuthProvider>
+    </SWRConfig>
   );
 }
 

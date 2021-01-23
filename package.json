@@ -30,13 +30,15 @@
     "mailgun-js": "^0.22.0",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.10",
-    "typeorm": "0.2.29"
+    "typeorm": "0.2.29",
+    "typeorm-seeding": "^1.6.1"
   },
   "scripts": {
     "start": "ts-node src/server.ts",
     "server": "nodemon --exec ts-node src/server.ts",
     "client": "cd client && npm run dev",
     "dev": "concurrently \"npm run server\" \"npm run client\" --names server,client ",
-    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "seed": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
   }
 }
