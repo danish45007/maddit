@@ -10,7 +10,6 @@ import authRoutes from "./routes/auth";
 import postRoutes from "./routes/post";
 import subsRoutes from "./routes/subs";
 import miscRoutes from "./routes/misc";
-
 import trim from "./middlewares/trim";
 const app = express();
 

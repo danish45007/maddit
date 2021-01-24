@@ -5,7 +5,7 @@ module.exports = {
   username: process.env.USERNAME,
   password: process.env.PASSWORD,
   database: "reddit",
-  synchronize: true,
+  synchronize: false,
   logging: true,
   entities: ["src/entities/**/*.ts"],
   migrations: ["src/migrations/**/*.ts"],
@@ -13,7 +13,7 @@ module.exports = {
   seeds: ["src/seeds/**/*{.ts,.js}"],
   cli: {
     entitiesDir: "src/entities",
-    migrationsDir: "src/migration",
+    migrationsDir: "src/migrations",
     subscribersDir: "src/subscriber",
   },
 };
