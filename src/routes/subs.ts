@@ -99,7 +99,7 @@ const uploadSubsImage = async (req: Request, res: Response) => {
   const sub: Sub = res.locals.sub;
   try {
     const type = req.body.type;
-    console.log("Type----------------", type);
+    // console.log("Type----------------", type);
     if (type !== "image" && type !== "banner") {
       // delete the file using the path as the type is invaild
       fs.unlinkSync(req.file.path);

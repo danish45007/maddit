@@ -1,3 +1,4 @@
+import { Expose } from "class-transformer";
 import {
   Entity as ToEntity,
   Column,
@@ -43,4 +44,20 @@ export default class Sub extends Entity {
 
   @OneToMany(() => Post, (post) => post.sub)
   posts: Post[];
+
+  // image url
+  @Expose()
+  get imageUrl(): string {
+    return this.imageUrn
+      ? `${process.env.APP_URL}/images/${this.imageUrn}`
+      : "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+  }
+
+  // banner url
+  @Expose()
+  get bannerUrl(): string | undefined {
+    return this.bannerUrn
+      ? `${process.env.APP_URL}/images/${this.bannerUrn}`
+      : undefined;
+  }
 }
