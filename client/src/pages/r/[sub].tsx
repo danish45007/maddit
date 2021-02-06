@@ -12,12 +12,15 @@ import classNames from "classnames";
 import { useEffect } from "react";
 import axios from "axios";
 import { ChangeEvent } from "react";
+import Sidebar from "../../components/Sidebar";
 
 function SubPage() {
   // Local State
   const [ownSub, setOwnSub] = useState(false);
+
   // Global State
   const { authenticated, user } = useAuthState();
+
   // Utils
   const router = useRouter();
   const fileInputRef = createRef<HTMLInputElement>();
@@ -140,6 +143,7 @@ function SubPage() {
             {/* Posts feed */}
             <div className="w-160">{postsMarkup}</div>
             {/* Sidebar */}
+            <Sidebar sub={sub} />
           </div>
         </Fragment>
       )}

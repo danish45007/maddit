@@ -11,6 +11,7 @@ import postRoutes from "./routes/post";
 import subsRoutes from "./routes/subs";
 import miscRoutes from "./routes/misc";
 import trim from "./middlewares/trim";
+// const io = require("socket.io")(process.env.SOCKET_PORT);
 const app = express();
 
 // middlewares
@@ -46,6 +47,19 @@ app.listen(PORT, async () => {
   try {
     await createConnection();
     console.log("Database connected!");
+
+    // TODO: Setup real time online user count
+    // var userCount = 0;
+
+    // io.sockets.on("connection", function (socket: any) {
+    //   userCount++;
+    //   io.sockets.emit("userCount", { userCount: userCount });
+    //   socket.on("disconnect", function () {
+    //     userCount--;
+    //     io.sockets.emit("userCount", { userCount: userCount });
+    //   });
+    // });
+    // console.log(`Socket Connection Setup on PORT:${process.env.SOCKET_PORT}`);
   } catch (err) {
     console.log(err);
   }

@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
+import { getConnection } from "typeorm";
 import Comment from "../entities/Comment";
 import Post from "../entities/Post";
+import Sub from "../entities/Subs";
 import User from "../entities/User";
 import Vote from "../entities/Vote";
 import auth from "../middlewares/auth";
@@ -90,7 +92,44 @@ const vote = async (req: Request, res: Response) => {
   }
 };
 
+// get the top-5 subs based on no.of posts
+const topSubs = async (_: Request, res: Response) => {
+  try {
+    // Raw SQL Query
+    /**
+     * SELECT s.title, s.name,
+     * COALESCE('http://localhost:5000/image-url' || s.'imageUrn', 'gravtor-image-url) as imageUrl,
+     * count(p.id) as "postCount"
+     * FROM subs s
+     * LEFT JOIN posts p ON s.name = p."subName"
+     * GROUP BY s.title, s.name, imageUrl
+     * ORDER BY "postcount" DESC
+     * LIMIT 5;
+     */
+    const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn", 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y')`;
+    const subs = await getConnection()
+      .createQueryBuilder()
+      .select(
+        `s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`
+      )
+      .from(Sub, "s")
+      .leftJoin(Post, "p", `s.name = p."subName"`)
+      .groupBy(`s.title, s.name,"imageUrl"`)
+      .orderBy(`"postCount"`, "DESC")
+      .limit(5)
+      .execute();
+
+    return res.status(200).json(subs);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: "Something went wrong",
+    });
+  }
+};
+
 const router = Router();
 router.post("/vote", user, auth, vote);
+router.get("/top-subs", topSubs);
 
 export default router;

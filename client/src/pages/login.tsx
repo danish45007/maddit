@@ -19,7 +19,8 @@ export default function Register() {
 
   const router = useRouter();
   if (authenticated) {
-    router.push("/");
+    // route back to prev. page
+    router.back();
   }
 
   const handleSignin = (event: FormEvent) => {
