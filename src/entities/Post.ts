@@ -6,7 +6,6 @@ import {
   JoinColumn,
   BeforeInsert,
   OneToMany,
-  AfterLoad,
 } from "typeorm";
 import { makeId, slugify } from "../util/helpers";
 
@@ -59,10 +58,8 @@ export default class Post extends Entity {
   @OneToMany(() => Vote, (vote) => vote.post)
   votes: [];
 
-  protected url = "string";
-  @AfterLoad()
-  createFields() {
-    this.url = `/r/${this.subName}/${this.identifier}/${this.slug}`;
+  @Expose() get url(): string {
+    return `/r/${this.subName}/${this.identifier}/${this.slug}`;
   }
 
   // to know if user vote the post

@@ -61,7 +61,7 @@ const getPost = async (req: Request, res: Response) => {
     const post = await Post.findOneOrFail(
       { identifier, slug },
       {
-        relations: ["sub", "vote"],
+        relations: ["sub", "votes"],
       }
     );
 
@@ -69,9 +69,7 @@ const getPost = async (req: Request, res: Response) => {
       post.setUserVote(res.locals.user);
     }
 
-    return res.status(200).json({
-      post,
-    });
+    return res.status(200).json(post);
   } catch (error) {
     console.log(error);
     return res.status(404).json({ error: "Post not found" });
