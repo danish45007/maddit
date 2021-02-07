@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Post } from "../types";
 import classNames from "classnames";
+
+import { useRouter } from "next/router";
 dayjs.extend(relativeTime);
 
 interface PostCardProps {
@@ -27,13 +29,19 @@ const PostCard: React.FC<PostCardProps> = ({
     userVote,
   },
 }) => {
+  const router = useRouter();
   // get the votes
-  const vote = async (value) => {
-    await Axios.post("/misc/vote", {
-      identifier,
-      slug,
-      value,
-    });
+  const vote = async (value: number) => {
+    try {
+      await Axios.post("/misc/vote", {
+        identifier,
+        slug,
+        value,
+      });
+    } catch (err) {
+      console.log(err);
+      router.push("/");
+    }
   };
 
   return (
