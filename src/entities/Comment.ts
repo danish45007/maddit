@@ -12,7 +12,7 @@ import User from "./User";
 import Post from "./Post";
 import { makeId } from "../util/helpers";
 import Vote from "./Vote";
-import { Exclude } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 @ToEntity("comments")
 export default class Comment extends Entity {
   // post
@@ -42,6 +42,10 @@ export default class Comment extends Entity {
   @Exclude()
   @OneToMany(() => Vote, (vote) => vote.comment)
   votes: [];
+
+  @Expose() get voteCount(): number {
+    return this.votes?.reduce((prev, curr: any) => prev + (curr.value || 0), 0);
+  }
 
   // to know if user vote the comment
   protected userVote: number;
