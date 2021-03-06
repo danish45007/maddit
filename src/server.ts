@@ -10,6 +10,8 @@ import authRoutes from "./routes/auth";
 import postRoutes from "./routes/post";
 import subsRoutes from "./routes/subs";
 import miscRoutes from "./routes/misc";
+import userRoutes from "./routes/users";
+
 import trim from "./middlewares/trim";
 // const io = require("socket.io")(process.env.SOCKET_PORT);
 const app = express();
@@ -34,6 +36,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/subs", subsRoutes);
 app.use("/api/misc", miscRoutes);
+app.use("/api/users", userRoutes);
 
 // test route
 app.get("/", (_, res) => {

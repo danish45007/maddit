@@ -31,29 +31,30 @@ export default function Home() {
               </p>
             </div>
             <div>
-              {topSubs?.map((sub: Sub) => (
-                <div
-                  key={sub.name}
-                  className="flex items-center px-4 py-2 text-xs border-b"
-                >
-                  <Link href={`/r/${sub.name}`}>
-                    <Image
-                      src={sub.imageUrl}
-                      className="rounded-full cursor-pointer"
-                      alt="Sub"
-                      width={(6 * 16) / 4}
-                      height={(6 * 16) / 4}
-                    />
-                  </Link>
+              {topSubs &&
+                topSubs?.map((sub: Sub) => (
+                  <div
+                    key={sub.name}
+                    className="flex items-center px-4 py-2 text-xs border-b"
+                  >
+                    <Link href={`/r/${sub.name}`}>
+                      <Image
+                        src={sub.imageUrl}
+                        className="rounded-full cursor-pointer"
+                        alt="Sub"
+                        width={(6 * 16) / 4}
+                        height={(6 * 16) / 4}
+                      />
+                    </Link>
 
-                  <Link href={`/r/${sub.name}`}>
-                    <a className="ml-2 font-bold hover:curser-pointer">
-                      {`r/${sub.name}`}
-                    </a>
-                  </Link>
-                  <p className="ml-auto font-medium">{sub.postCount}</p>
-                </div>
-              ))}
+                    <Link href={`/r/${sub.name}`}>
+                      <a className="ml-2 font-bold hover:curser-pointer">
+                        {`r/${sub.name}`}
+                      </a>
+                    </Link>
+                    <p className="ml-auto font-medium">{sub.postCount}</p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
