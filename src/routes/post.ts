@@ -20,10 +20,7 @@ const createPost = async (req: Request, res: Response) => {
     const subRecord = await Sub.findOneOrFail({ name: sub });
     const post = new Post({ title, body, user, sub: subRecord });
     await post.save();
-    return res.status(201).json({
-      message: "Successfully created post",
-      data: post,
-    });
+    return res.status(201).json(post);
   } catch (error) {
     console.log(error);
     return res.status(500).json({
