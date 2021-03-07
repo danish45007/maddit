@@ -71,6 +71,27 @@ const getSub = async (req: Request, res: Response) => {
   }
 };
 
+// search functionality for subs
+const searchSubs = async (req: Request, res: Response) => {
+  try {
+    const name = req.params.name;
+
+    if (isEmpty(name)) {
+      return res.status(400).json({ error: "Name must not be empty" });
+    }
+    const subs = await getRepository(Sub)
+      .createQueryBuilder()
+      .where("LOWER(name) LIKE :name", {
+        name: `${name.toLowerCase().trim()}%`,
+      })
+      .getMany();
+
+    return res.json(subs);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
 // middleware to check sub-owner
 const subOwner = async (req: Request, res: Response, next: NextFunction) => {
   const user: User = res.locals.user;
@@ -133,6 +154,7 @@ const uploadSubsImage = async (req: Request, res: Response) => {
 const router = Router();
 router.post("/", user, auth, createSubs);
 router.get("/:name", user, getSub);
+router.get("/search/:name", searchSubs);
 router.post(
   "/:name/image",
   user,
