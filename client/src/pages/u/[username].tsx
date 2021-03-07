@@ -1,8 +1,11 @@
+import dayjs from "dayjs";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 import PostCard from "../../components/PostCard";
+import { Post, Comment } from "../../types";
 
 function user() {
   const router = useRouter();
@@ -20,10 +23,62 @@ function user() {
           <div className="w-160">
             {data.submissions.map((submission: any) => {
               if (submission.type === "Posts") {
-                const post = submission;
+                const post: Post = submission;
                 return <PostCard key={post.identifier} post={post} />;
+              } else {
+                const comment: Comment = submission;
+                return (
+                  <div
+                    key={comment.identifier}
+                    className="flex my-4 bg-white rounded"
+                  >
+                    <div className="flex-shrink-0 w-10 py-10 text-center bg-gray-200 rounded-l">
+                      <i className="text-gray-400 fas fa-comment-alt fa-xs"></i>
+                    </div>
+                    <div className="w-full p-2">
+                      <p className="mb-2 text-xs text-gray-500">
+                        {comment.username}
+
+                        <span className="text-gray-500"> commented on </span>
+                        <Link href={comment.post.url}>
+                          <a className="font-semibold text-blue-500 cursor-pointer hover:underline">
+                            {comment.post.title}
+                          </a>
+                        </Link>
+                        <span className="mx-1">•</span>
+                        <Link href={`/r/${comment.post.subName}`}>
+                          <a className="text-black cursor-pointer hover:underline">
+                            r/{comment.post.subName}
+                          </a>
+                        </Link>
+                      </p>
+                      <hr />
+                      <p>{comment.body}</p>
+                    </div>
+                  </div>
+                );
               }
             })}
+          </div>
+          <div className="ml-8 w-80">
+            <div className="bg-white">
+              <div className="p-3 bg-blue-500 rounded-t">
+                <img
+                  src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+                  alt="user profile"
+                  className="w-16 h-16 mx-auto border-2 border-white rounded-full"
+                />
+              </div>
+              <div className="p-3">
+                <h1 className="mb-4 text-xl text-center">
+                  {data.user.username}
+                </h1>
+                <hr />
+                <p className="mt-2 text-center">
+                  Joined {dayjs(data.user.createdAt).format("MMM YYYY")}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
