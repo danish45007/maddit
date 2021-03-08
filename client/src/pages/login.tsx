@@ -9,7 +9,7 @@ import InputGroup from "../components/InputGroup";
 import { useAuthDispatch, useAuthState } from "../context/auth";
 import axios from "axios";
 
-export default function Register() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<any>({});

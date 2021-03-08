@@ -2,13 +2,17 @@ import Head from "next/head";
 import PostCard from "../components/PostCard";
 import useSWR from "swr";
 import { Fragment } from "react";
-import { Sub } from "../types";
+import { Post, Sub } from "../types";
 import Image from "next/image";
 import Link from "next/Link";
+import { useAuthState } from "../context/auth";
 
 export default function Home() {
-  const { data: posts } = useSWR("/posts");
-  const { data: topSubs } = useSWR("/misc/top-subs");
+  // global state
+  const { authenticated } = useAuthState();
+
+  const { data: posts } = useSWR<Post[]>("/posts");
+  const { data: topSubs } = useSWR<Sub[]>("/misc/top-subs");
 
   return (
     <Fragment>
@@ -32,19 +36,21 @@ export default function Home() {
             </div>
             <div>
               {topSubs &&
-                topSubs?.map((sub: Sub) => (
+                topSubs?.map((sub) => (
                   <div
                     key={sub.name}
                     className="flex items-center px-4 py-2 text-xs border-b"
                   >
                     <Link href={`/r/${sub.name}`}>
-                      <Image
-                        src={sub.imageUrl}
-                        className="rounded-full cursor-pointer"
-                        alt="Sub"
-                        width={(6 * 16) / 4}
-                        height={(6 * 16) / 4}
-                      />
+                      <a>
+                        <Image
+                          src={sub.imageUrl}
+                          className="rounded-full cursor-pointer"
+                          alt="Sub"
+                          width={(6 * 16) / 4}
+                          height={(6 * 16) / 4}
+                        />
+                      </a>
                     </Link>
 
                     <Link href={`/r/${sub.name}`}>
@@ -55,6 +61,15 @@ export default function Home() {
                     <p className="ml-auto font-medium">{sub.postCount}</p>
                   </div>
                 ))}
+              {authenticated && (
+                <div className="p-4 border-t-2">
+                  <Link href="/subs/create">
+                    <a className="w-full px-2 py-1 button blue">
+                      Create Community
+                    </a>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
