@@ -14,7 +14,7 @@ export default function create() {
   const [errors, setErrors] = useState<Partial<any>>({});
   const router = useRouter();
   const submitForm = async (event: FormEvent) => {
-    event.preventDefault;
+    event.preventDefault();
     try {
       const res = await axios.post("/subs", { name, title, description });
       router.push(`/r/${res.data.name}`);
@@ -76,7 +76,7 @@ export default function create() {
             </div>
             {/* description */}
             <div className="my-6">
-              <p className="font-medium">Description*</p>
+              <p className="font-medium">Description</p>
               <p className="text-xs text-gray-500">
                 This how new members can understand your community.
               </p>
@@ -85,14 +85,10 @@ export default function create() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder=""
-                className={className(
-                  "w-full p-3 mt-2 border border-gray-200 rounded hover:border-gray-500",
-                  { "border-red-600": errors.description }
-                )}
+                className={
+                  "w-full p-3 mt-2 border border-gray-200 rounded hover:border-gray-500"
+                }
               />
-              <small className="font-medium text-red-600">
-                {errors.description}
-              </small>
             </div>
             <div className="flex justify-end">
               <button className="px-4 py-1 text-sm font-semibold capitalize button blue">

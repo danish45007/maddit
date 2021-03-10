@@ -18,7 +18,7 @@ const createSubs = async (req: Request, res: Response) => {
       errors.name = "Names must not be empty";
     }
     if (isEmpty(title)) {
-      errors.name = "Title must not be empty";
+      errors.title = "Title must not be empty";
     }
     const sub = await getRepository(Sub)
       .createQueryBuilder("sub")
@@ -29,17 +29,20 @@ const createSubs = async (req: Request, res: Response) => {
     }
 
     if (Object.keys(errors).length > 0) {
-      throw errors;
+      return res.status(400).json(errors);
     }
-  } catch (error) {
-    return res.status(400).json({ error });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: "Something went wrong",
+    });
   }
 
   //   creating the sub
   try {
     const sub = new Sub({ name, title, description, user });
     await sub.save();
-    return res.status(201).json({ sub });
+    return res.status(201).json(sub);
   } catch (error) {
     console.log(error);
     return res.status(500).json({
