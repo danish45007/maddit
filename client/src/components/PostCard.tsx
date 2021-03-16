@@ -7,10 +7,12 @@ import { Post } from "../types";
 import classNames from "classnames";
 
 import { useRouter } from "next/router";
+import { useAuthState } from "../context/auth";
 dayjs.extend(relativeTime);
 
 interface PostCardProps {
   post: Post;
+  revalidate?: Function;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -28,16 +30,21 @@ const PostCard: React.FC<PostCardProps> = ({
     commentCount,
     userVote,
   },
+  revalidate,
 }) => {
   const router = useRouter();
   // get the votes
+  const { authenticated } = useAuthState();
   const vote = async (value: number) => {
+    if (!authenticated) router.push("/login");
+    if (value === userVote) value = 0;
     try {
       await Axios.post("/misc/vote", {
         identifier,
         slug,
         value,
       });
+      if (revalidate) revalidate();
     } catch (err) {
       console.log(err);
       router.push("/");
@@ -45,7 +52,11 @@ const PostCard: React.FC<PostCardProps> = ({
   };
 
   return (
-    <div key={identifier} className="flex mb-4 bg-white rounded">
+    <div
+      key={identifier}
+      className="flex mb-4 bg-white rounded"
+      id={identifier}
+    >
       {/* Vote section */}
       <div className="w-10 py-3 text-center bg-gray-200 rounded-l">
         {/* upvote */}
