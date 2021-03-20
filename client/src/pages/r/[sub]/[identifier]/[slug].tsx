@@ -13,11 +13,14 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useAuthState } from "../../../../context/auth";
 import ActionButton from "../../../../components/ActionButton";
 import { FormEvent } from "react";
+import { useEffect } from "react";
 dayjs.extend(relativeTime);
 
 function PostPage() {
   // Local state
   const [newComment, setNewComment] = useState("");
+
+  const [description, setDescription] = useState("");
   // Global state
   const { authenticated, user } = useAuthState();
   //   Utils
@@ -35,6 +38,14 @@ function PostPage() {
   if (error) {
     router.push("/");
   }
+
+  useEffect(() => {
+    if (!post) return;
+    let desc = post.body || post.title;
+    // how google recommand
+    desc = desc.substring(0, 158).concat("...");
+    setDescription(desc);
+  }, [post]);
   // get the votes
   const vote = async (value: number, comment?: Comment) => {
     //   if not logged in go to login
@@ -77,6 +88,13 @@ function PostPage() {
     <>
       <Head>
         <title>{post?.title}</title>
+        <meta name="description" content={description}></meta>
+        {/* For Facebook SEO */}
+        <meta property="og:title" content={post?.title} />
+        <meta property="og:description" content={description} />
+        {/* For Twitter SEO */}
+        <meta property="twitter:title" content={post?.title} />
+        <meta property="twitter:description" content={description} />
       </Head>
       <Link href={`/r/${sub}`}>
         <a>

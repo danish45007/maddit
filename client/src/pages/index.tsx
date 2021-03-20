@@ -13,7 +13,9 @@ export default function Home() {
   // global state
   const { authenticated } = useAuthState();
   // local
-
+  const title = "Maddit: the front page of the internet";
+  const description =
+    "Maddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!";
   const [observedPost, setObservedPost] = useState("");
 
   // const { data: posts } = useSWR<Post[]>("/posts");
@@ -57,7 +59,14 @@ export default function Home() {
   return (
     <Fragment>
       <Head>
-        <title>Maddit: the front page of the internet</title>
+        <title>{title}</title>
+        <meta name="description" content={description}></meta>
+        {/* For Facebook SEO */}
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        {/* For Twitter SEO */}
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
       </Head>
       <div className="container flex pt-4">
         {/* Posts feed */}
