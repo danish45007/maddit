@@ -13,6 +13,7 @@ export default function Home() {
   // global state
   const { authenticated } = useAuthState();
   // local
+
   const [observedPost, setObservedPost] = useState("");
 
   // const { data: posts } = useSWR<Post[]>("/posts");
@@ -21,10 +22,12 @@ export default function Home() {
     data,
     size: page,
     setSize: setPage,
-    isValidating,
+    error,
     revalidate,
   } = useSWRInfinite<Post[]>((index) => `/posts?page=${index}`);
   const posts: Post[] = data ? [].concat(...data) : [];
+
+  const initalLoading = !data && !error;
 
   useEffect(() => {
     if (!posts || posts.length === 0) return;
@@ -59,7 +62,7 @@ export default function Home() {
       <div className="container flex pt-4">
         {/* Posts feed */}
         <div className="w-full px-4 md:w-160 md:p-0">
-          {isValidating && <LoadingPage />}
+          {initalLoading && <LoadingPage />}
           {posts?.map((post) => (
             <PostCard
               post={post}
@@ -67,7 +70,7 @@ export default function Home() {
               revalidate={revalidate}
             />
           ))}
-          {isValidating && posts.length > 0 && <LoadingPage />}
+          {initalLoading && posts.length > 0 && <LoadingPage />}
         </div>
         {/* Sidebar */}
         <div className="hidden ml-6 md:block w-80">

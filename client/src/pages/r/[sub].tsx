@@ -73,7 +73,7 @@ function SubPage() {
     postsMarkup = <LoadingPage />;
   } else {
     postsMarkup = sub?.posts.map((post) => (
-      <PostCard post={post} key={post.identifier} />
+      <PostCard post={post} key={post.identifier} revalidate={revalidate} />
     ));
   }
   return (

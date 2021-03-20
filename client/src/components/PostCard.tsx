@@ -29,10 +29,12 @@ const PostCard: React.FC<PostCardProps> = ({
     voteCount,
     commentCount,
     userVote,
+    sub,
   },
   revalidate,
 }) => {
   const router = useRouter();
+  const isInSubPage = router.pathname === "/r/[sub]";
   // get the votes
   const { authenticated } = useAuthState();
   const vote = async (value: number) => {
@@ -88,19 +90,21 @@ const PostCard: React.FC<PostCardProps> = ({
       <div className="w-full p-2">
         {/* top post meta data */}
         <div className="flex items-center">
-          <Link href={`/r/${subName}`}>
-            <img
-              src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=robohash&f=y"
-              className="w-6 h-6 mr-1 rounded-full"
-            />
-          </Link>
-          <Link href={`/r/${subName}`}>
-            <a className="text-xs font-bold cursor-pointer hover:underline">
-              r/{subName}
-            </a>
-          </Link>
-          <p className="ml-1 mr-1 text-xs text-gray-500">
-            • Posted by
+          {!isInSubPage && (
+            <>
+              <Link href={`/r/${subName}`}>
+                <img src={sub.imageUrl} className="w-6 h-6 mr-1 rounded-full" />
+              </Link>
+              <Link href={`/r/${subName}`}>
+                <a className="text-xs font-bold cursor-pointer hover:underline">
+                  r/{subName}
+                </a>
+              </Link>
+              <span className="mx-1">•</span>
+            </>
+          )}
+          <p className="text-xs text-gray-500">
+            Posted by
             <Link href={`/u/${username}`}>
               <a className="ml-1 text-xs font-bold cursor-pointer hover:underline">
                 u/{username}
